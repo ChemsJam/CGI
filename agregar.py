@@ -1,0 +1,29 @@
+#! C:\Python311\python.exe
+
+import mysql.connector
+import os
+import cgi
+import cgitb
+cgitb.enable()
+print("Content-type: text/html")
+print()
+
+metodo = os.environ["REQUEST_METHOD"]
+
+if metodo == "POST":
+    datos = cgi.FieldStorage()
+    e = datos.getvalue("email")
+    p = datos.getvalue("password")
+    n = datos.getvalue("name")
+    a = datos.getvalue("avatar")
+    r = datos.getvalue("rol")
+    con = mysql.connector.connect(user='root', password="", host='127.0.0.1', database="foro")
+    cur = con.cursor()
+    sql = "INSERT INTO users (email, password, name, avatar, role) VALUES ('{}', sha1('{}'),'{}','{}','{}')".format(e, p, n, a, r)
+
+    cur.execute(sql)  
+    con.commit()
+    con.close()
+    print("<h1>Usuario agregador</h1>")
+else:
+    print("<h1>Metodo fallido</h1>")
